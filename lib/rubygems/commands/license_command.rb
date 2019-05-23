@@ -36,6 +36,11 @@ class Gem::Commands::LicenseCommand < Gem::Command
     license_id_rxp = Regexp.new(Regexp.escape(license_id), Regexp::IGNORECASE)
     matched_ids = id_list.select { |id| id =~ license_id_rxp }
 
+    if matched_ids.empty?
+      say 'Unable to find a matching SPDX identifier'
+      exit
+    end
+
     perfect_match = matched_ids.find { |id| id =~ /\A#{license_id_rxp}\Z/i }
 
     unless perfect_match
@@ -72,6 +77,24 @@ class Gem::Commands::LicenseCommand < Gem::Command
 
   def execute
     id = options[:args].first
+
+    if id.nil?
+      say "USAGE: #{usage}"
+      exit
+    end
+
     download(id)
+  end
+
+  def description
+    'Fetch a LICENSE based on an SPDX identifier'
+  end
+
+  def arguments
+    'SPDX_IDENTIFIER   An identifier from SPDX\'s license list https://spdx.org/licenses/'
+  end
+
+  def usage
+    'gem license SPDX_IDENTIFIER'
   end
 end
