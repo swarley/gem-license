@@ -4,8 +4,6 @@ require 'English'
 
 # Container for license fetching utilities
 module Gem::License
-  module_function
-
   def fetch_license_list
     list_uri = URI('https://spdx.org/licenses/licenses.json')
     JSON.parse(list_uri.read)['licenses']
@@ -30,7 +28,43 @@ module Gem::License
     abort 'Unable to find a matching SPDX identifier.' + (id ? " Did you mean `#{id}'?" : '')
   end
 
-  def write_license(license_obj, path = nil)
+  def format_license(text)
+    data_map = {
+      /<\s*(year|yyyy|dates)\s*>/i => Time.now.year,
+      /<program>/i => File.basename(Dir.pwd)
+    }
+
+    begin
+      name = `git config --get user.name`.chomp
+    rescue Errno::ENOENT
+      name = nil
+      say 'Can\'t find git for user.name'
+    end
+
+    if name
+      if name.empty?
+        say '[WARN] No user.name git config value'
+      else
+        author = `git config --get user.name`.chomp
+        data_map[
+          Regexp.union(
+            /<\s*author\s*>/i,
+            /<\s*name of author\s*>/i,
+            /<\s*owner\s*>/i,
+            /<copyright holders?>/i
+          )
+         ] = author
+      end
+    end
+
+    data_map.each do |pattern, value|
+      text.gsub!(pattern, value.to_s)
+    end
+
+    text
+  end
+
+  def write_license(license_obj, path = nil, format = false)
     text = fetch_license_text(license_obj['detailsUrl'])
     text = format_license(text) if format
 
@@ -43,16 +77,18 @@ module Gem::License
     end
   end
 
-  def download(shortname, opt)
+  def download(spdx_id, opt)
     license_list = fetch_license_list
     id_list = license_list.collect { |l_obj| l_obj['licenseId'] }
 
-    id = match_license_id(shortname, id_list)
+    id = match_license_id(spdx_id, id_list)
     license_obj = license_list.find { |l_obj| l_obj['licenseId'] == id }
 
     path = opt[:output_path]
     path = 'LICENSE' + (opt[:markdown] ? '.md' : '') if path.nil? && !opt[:stdout]
 
-    write_license license_obj, path
+    write_license license_obj, path, opt[:format]
+
+    say 'Remember to read your license for any fields you might need to fill in.'
   end
 end

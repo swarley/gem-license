@@ -6,6 +6,8 @@ require 'json'
 
 # license gem plugin
 class Gem::Commands::LicenseCommand < Gem::Command
+  include Gem::License
+
   def initialize
     super('license', 'Download a license by SPDX id')
 
@@ -24,11 +26,15 @@ class Gem::Commands::LicenseCommand < Gem::Command
     add_option('-l', '--list', 'View all available licenses') do |_, options|
       options[:list] = true
     end
+
+    add_option('-f', '--format', 'Attempt to fill in values like year, author, and program name') do |_, options|
+      options[:format] = true
+    end
   end
 
   def execute
     if options[:list]
-      list = Gem::License.fetch_license_list
+      list = fetch_license_list
       just_size = list.collect { |lsc| lsc['licenseId'].length }.max
       list.each do |license|
         say(license['licenseId'].ljust(just_size) + ' - ' + license['name'])
@@ -37,7 +43,7 @@ class Gem::Commands::LicenseCommand < Gem::Command
     end
 
     id = options[:args].first || abort("USAGE: #{usage}")
-    Gem::License.download(id, options)
+    download(id, options)
   end
 
   def description

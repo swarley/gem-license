@@ -25,3 +25,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Suggestions when an identifier does not match in the license list
 - -l/--list for viewing all available licenses
 - -o/--output for specifying an output path
+- -f/--format attempt to format common values

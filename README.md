@@ -11,6 +11,7 @@ gem install gem-license
 ## Usage
 
 ```sh
+# download the MIT license to `LICENSE'
 gem license mit
 
 # output to stdout
@@ -21,6 +22,12 @@ gem license apl-1.0 -m
 
 # specify output path
 gem license mit -o MIT.license
+
+# attempt to format common values
+# Uses git config --get user.name for author names,
+# and the base name of the current working directory for
+# program/project name.
+gem license mit -f
 
 # view a list of all available licenses
 gem license -l

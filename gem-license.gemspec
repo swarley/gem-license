@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/swarley/gem-license'
 
   spec.summary       = 'Gem plugin to download licenses'
-  spec.description   = 'Gem plugin to download a LICENSE file based on its shortname'
+  spec.description   = 'Gem plugin to download a LICENSE file based on its SPDX identifier'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
