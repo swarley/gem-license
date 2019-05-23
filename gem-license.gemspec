@@ -5,6 +5,7 @@ Gem::Specification.new do |spec|
   spec.version       = '0.2.0'
   spec.authors       = ['Matt Carey']
   spec.email         = ['matthew.b.carey@gmail.com']
+  spec.homepage      = 'https://github.com/swarley/gem-license'
 
   spec.summary       = 'Gem plugin to download licenses'
   spec.description   = 'Gem plugin to download a LICENSE file based on its shortname'
