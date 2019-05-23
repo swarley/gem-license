@@ -14,10 +14,16 @@ gem install gem-license
 gem license mit
 
 # output to stdout
-gem license gpl-3.0
+gem license gpl-3.0 -s
 
 # create a LICENSE.md
-gem license apl-1.0
+gem license apl-1.0 -d
+
+# specify output path
+gem license mit -o MIT.license
+
+# view a list of all available licenses
+gem license -l
 ```
 
 Licenses names are all based on SPDX identifiers and are not case sensitive.

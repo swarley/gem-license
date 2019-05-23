@@ -17,3 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Usage information
 - Handler for no matches against given input
+
+## [0.3.0] - 2019-5-23
+
+### Added
+
+- Suggestions when an identifier does not match in the license list
+- -l/--list for viewing all available licenses
+- -o/--output for specifying an output path
