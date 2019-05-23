@@ -17,7 +17,7 @@ gem license mit
 gem license gpl-3.0 -s
 
 # create a LICENSE.md
-gem license apl-1.0 -d
+gem license apl-1.0 -m
 
 # specify output path
 gem license mit -o MIT.license
