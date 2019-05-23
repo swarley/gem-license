@@ -7,6 +7,14 @@ require 'json'
 class Gem::Commands::LicenseCommand < Gem::Command
   def initialize
     super('license', 'Download a license by SPDX id')
+
+    add_option('-m', '--markdown', 'Download as LICENSE.md') do |_, options|
+      options[:markdown] = true
+    end
+
+    add_option('-s', '--stdout', 'Write to STDOUT instead of LICENSE') do |_, options|
+      options[:stdout] = true
+    end
   end
 
   def fetch_license_list
@@ -28,15 +36,28 @@ class Gem::Commands::LicenseCommand < Gem::Command
     license_id_rxp = Regexp.new(Regexp.escape(license_id), Regexp::IGNORECASE)
     matched_ids = id_list.select { |id| id =~ license_id_rxp }
 
-    perfect_match = matched_ids.find { |id| id =~ /\A#{license_id_regexp}\Z/i }
+    perfect_match = matched_ids.find { |id| id =~ /\A#{license_id_rxp}\Z/i }
 
     unless perfect_match
       say 'Unable to find an exact match. Suggestions below'
-      matches_ids.each { |id| say "\t#{id}" }
+      matched_ids.each { |id| say "\t#{id}" }
       exit
     end
 
     perfect_match
+  end
+
+  def write_license(license_obj)
+    text = fetch_license_text(license_obj['detailsUrl'])
+    if options[:stdout]
+      say text
+    else
+      fname = 'LICENSE'
+      fname += '.md' if options[:markdown]
+      File.open(fname, 'w+') do |f|
+        f.write text
+      end
+    end
   end
 
   def download(shortname)
@@ -46,7 +67,7 @@ class Gem::Commands::LicenseCommand < Gem::Command
     id = match_license_id(shortname, id_list)
     license_obj = license_list.find { |l_obj| l_obj['licenseId'] == id }
 
-    say fetch_license_text(license_obj['detailsUrl'])
+    write_license license_obj
   end
 
   def execute
