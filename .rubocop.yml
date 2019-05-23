@@ -1,0 +1,6 @@
+Style/ClassAndModuleChildren:
+  Exclude:
+    - "lib/rubygems/commands/license_command.rb"
+
+Metrics/LineLength:
+  Max: 110
