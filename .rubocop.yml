@@ -3,3 +3,6 @@ Style/ClassAndModuleChildren:
 
 Metrics:
   Enabled: false
+
+AllCops:
+  TargetRubyVersion: 2.3
